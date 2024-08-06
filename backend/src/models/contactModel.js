@@ -4,6 +4,11 @@ const mongoose = require("mongoose");
 // A schema is a blueprint for defining the structure of the documents in a MongoDB collection.
 // mongo atlas is a no sql database which stores data in the form of documents
 const contactSchema = mongoose.Schema({
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
   name: {
     type: String,
     required: [true, "Please add the contact name"],
