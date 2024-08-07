@@ -2,13 +2,15 @@ const asyncHanlder = require('express-async-handler');
 const jwt = require('jsonwebtoken');
 
 const validateTokenHandler = asyncHanlder(async (req, res, next) => {
-  let token;
+  let token = req.cookies.token;
   let authorizationHeader = req.headers.authorization || req.headers.Authorization;
-  if (authorizationHeader && authorizationHeader.startsWith('Bearer')) {
+  if (token || (authorizationHeader && authorizationHeader.startsWith('Bearer'))) {
     try {
-      token = authorizationHeader.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);4
-      console.log('decoded', decoded);
+      if (!token) {
+        token = authorizationHeader.split(' ')[1];
+      }
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      // console.log('decoded', decoded);
       // set the user in the request object
       // it will then be available in the route handler
       // since the user is set in the request object

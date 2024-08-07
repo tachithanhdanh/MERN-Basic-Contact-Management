@@ -69,7 +69,8 @@ const loginUser = asyncHandler(async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "60m" } // expires in 60 minutes
     );
-    res.status(200).json({ accessToken: token });
+    res.cookie("token", token, { httpOnly: true, expires: new Date(Date.now() + 60 * 60) });
+    res.status(200).json({ status: "success", token });
   } else {
     res.status(401);
     throw new Error("Invalid password");
@@ -86,4 +87,15 @@ const getUserProfile = asyncHandler(async (req, res) => {
   res.status(200).json(req.user);
 });
 
-module.exports = { registerUser, loginUser, getUserProfile };
+/**
+ * @route GET api/users/logout
+  * @apiName logoutUser
+  * @description Logout user
+  * @access private
+ */
+const logoutUser = asyncHandler(async (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ message: "Logged out successfully" });
+});
+
+module.exports = { registerUser, loginUser, getUserProfile, logoutUser };
